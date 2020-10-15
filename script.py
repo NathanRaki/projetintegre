@@ -57,6 +57,7 @@ for i in range(100) :
 #'''
 #########################
 
+# Conversion des titres en minuscule
 for i in range(len(publication)) :
 	publication['article_title'][i] = publication['article_title'][i].lower()
 	print(str(i) + ": " + publication['article_title'][i])
