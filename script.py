@@ -57,7 +57,6 @@ for i in range(100) :
 #'''
 #########################
 
-print("Author:\n")
-print(author)
-print("Publication:\n")
-print(publication)
+for i in range(len(publication)) :
+	publication['article_title'][i] = publication['article_title'][i].lower()
+	print(str(i) + ": " + publication['article_title'][i])
