@@ -49,11 +49,13 @@ lemmatized_titles = defaultdict(list)
 for k,v in optimized_titles.items() :
     lemmatized_titles[k] = [lemmatizer.lemmatize(w, get_wordnet_pos(w)) for w in v]
 
-#%% Stemming (Racinisation)
+'''
+#%% Stemming (Racinisation) - OBSOLETE
 stemmer = EnglishStemmer()
 stemmed_titles = defaultdict(list)
 for k,v in lemmatized_titles.items() :
     stemmed_titles[k] = [stemmer.stem(w) for w in v]
+#'''
     
 #%% Print Area
 
