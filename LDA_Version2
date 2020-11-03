@@ -66,6 +66,7 @@ def compute_coherence_values(dictionary, corpus, texts, limit, start=2, step=3):
 
 
 
+model_list, coherence_values = compute_coherence_values(dictionary=id2word, corpus=corpus, texts=final_titles, start=2, limit=40, step=1)
 
 
 
