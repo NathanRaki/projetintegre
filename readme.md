@@ -5,6 +5,8 @@
 
 ## Pour charger un .pickle :
 ```python
+import pickle
+
 with open('filename.pickle', 'rb') as handle:
 	article_titles = pickle.load(handle)
 ```
