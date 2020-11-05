@@ -2,16 +2,12 @@
 import pandas as pd
 import numpy as np
 import nltk
-#import string
 import re
 import os
-#import gensim
 import pickle
 
-#from nltk import word_tokenize
 from nltk.stem import WordNetLemmatizer
 from nltk.corpus import wordnet
-#from collections import defaultdict
 from country_list import countries_for_language
 from langdetect import detect_langs
 from gensim.parsing.preprocessing import STOPWORDS
