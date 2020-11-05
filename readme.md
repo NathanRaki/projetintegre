@@ -2,12 +2,19 @@
 
 ## Dans le dossier Dict :
 	Sauvegardes des dictionnaires à chaque étape du traitement
+	### Ordre des sauvegardes :
+	  * original_titles
+	  * cleaned
+	  * onlyenglish
+	  * tokenized
+	  * nostopwords
+	  * lemmatized (version finale)
 
 ## Pour charger un .pickle :
 ```python
 import pickle
 
-with open('filename.pickle', 'rb') as handle:
+with open('dict/lemmatized.pickle', 'rb') as handle:
 	article_titles = pickle.load(handle)
 ```
 
