@@ -10,6 +10,6 @@ with open('filename.pickle', 'rb') as handle:
 ```
 
 ## Pré-traitement des données :
-⋅⋅⋅INPUT: fichier publication.csv
-⋅⋅⋅OUTPUT: dictionnaire de listes { idconf:[tokens], idconf:[tokens], ...}
-⋅⋅⋅Utilisation de dictionnaire : + rapide que les listes sur un gros jeu de données
+  * INPUT: fichier publication.csv
+  * OUTPUT: dictionnaire de listes { idconf:[tokens], idconf:[tokens], ...}
+  * Utilisation de dictionnaire : + rapide que les listes sur un gros jeu de données
