@@ -8,6 +8,14 @@ This is a temporary script file.
 
 import os
 
+os.chdir("c:/Users/louis/OneDrive/Documents/GitHub/projetintegre/Detection communautées")
+
+'''
+Import classes
+'''
+from Author import Author
+from Publication import Publication
+
 os.chdir("c:/Users/louis/OneDrive/Documents/Master 1/Projet Intégré")
 
 import pandas
@@ -109,7 +117,7 @@ def display_graph():
     
 def visualize_params():
     visual_style = {}
-    visual_style["vertex_size"] = 5
+    visual_style["vertex_size"] = 10
     # visual_style["vertex_label"] = g.vs["author_name"]
     return visual_style
 
