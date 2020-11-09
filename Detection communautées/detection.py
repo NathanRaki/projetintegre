@@ -31,7 +31,7 @@ global g
 def start():
     g = igraph.Graph()
     set_graph(g)
-    display_graph()
+    # display_graph()
     # display_graph_information()
 
 """
@@ -62,7 +62,7 @@ def set_edges(g, publications):
                 g.add_edges([(publication.get_authors()[auth1],publication.get_authors()[auth2])],{"publication_id":publication.get_id_publication(), "publication_title":publication.get_article_title(), "publication_date":publication.get_publication_date(), "author_number": publication.get_nb_author(), "categorie": publication.get_categorie(), "weight":1})
 
 def simplify_graph(g):
-    g.simplify(combine_edges="sum")
+    g.simplify(combine_edges=dict(weight="sum"))
 
 """
 display graph
@@ -101,17 +101,6 @@ def display_graph_information():
     # print('modularity: ', g.modularity())
     # print('independance number: ', g.alpha())
     # print('coreness: ', g.shell_index())
-
-
-def linked_cluster(clusters):
-    cluster = []
-    for i in range(0,len(clusters)):
-        print(i, ' : ', clusters[i])
-        for node in clusters[i]:
-            for j in range (i+1, len(clusters)):
-                if(node in clusters[j]):
-                    cluster.append((i,j))
-    print(cluster)
 
 # start()
 
