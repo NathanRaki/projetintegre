@@ -20,8 +20,8 @@ class Author():
     '''
     instances = []
     
-    def __init__(self, id_patient, name, nbr_publications=0, publications=[]):
-        self.__id_patient=str(id_patient)
+    def __init__(self, id_author, name, nbr_publications=0, publications=[]):
+        self.__id_author=str(id_author)
         self.__name = name
         self.__nb_publications = nbr_publications
         self.__publications = publications
@@ -30,6 +30,9 @@ class Author():
     def set_publication(self, publication):
         self.__publications = publication
         
+    def get_author_id(self):
+        return self.__id_author        
+
     def get_author_name(self):
         return self.__name
     
@@ -38,7 +41,11 @@ class Author():
     
     @classmethod
     def get(cls, value):
-         return [inst for inst in cls.instances if inst.__id_patient == value]
+         return [inst for inst in cls.instances if inst.__id_author == value]
     
+    @classmethod
+    def get_all_instances(cls):
+        return [inst for inst in cls.instances]
+        
     def __str__(self):
-        return self.__id_patient + ', ' + self.__name + ', ' + str(self.__nb_publications) 
+        return self.__id_author + ', ' + self.__name + ', ' + str(self.__nb_publications) 

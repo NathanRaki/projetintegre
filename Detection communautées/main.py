@@ -14,6 +14,7 @@ Import classes
 '''
 from Author import Author
 from Publication import Publication
+import detection
 
 os.chdir("c:/Users/louis/OneDrive/Documents/Master 1/Projet Intégré")
 
@@ -33,6 +34,7 @@ def main():
     # print('publi_test: ', publi_test)
     # print('author_test: ', author_test)
     import_file()
+    detection.start()
     
 def import_file():
     publi_author = pandas.read_excel("test.xlsx")
@@ -72,8 +74,6 @@ def initialize_link_author_publi(publi_author):
         
     for index, value in authors.items():
         Author.get(index)[0].set_publication(value)
-    print(Author.get('id_15/1026')[0].get_author_publications())
-    print(Publication.get('conf/sitis/GhawiSP18')[0].get_authors())
 
     
 if __name__ == "__main__":

@@ -45,9 +45,28 @@ class Publication():
     def get_authors(self):
         return self.__authors
     
+    def get_id_publication(self):
+        return self.__id_publication
+    
+    def get_publication_date(self):
+        return self.__date_publication 
+
+    def get_nb_author(self):
+        return self.__nb_author
+    
+    def get_article_title(self):
+        return self.__article_title
+    
+    def get_categorie(self):
+        return self.__categorie
+    
     @classmethod
     def get(cls, value):
         return [inst for inst in cls.instances if inst.__id_publication == value]
+    
+    @classmethod
+    def get_all_instances(cls):
+        return [inst for inst in cls.instances]
     
     def __str__(self):
         return self.__id_publication + ', ' + str(self.__date_publication) + ', ' + self.__article_title

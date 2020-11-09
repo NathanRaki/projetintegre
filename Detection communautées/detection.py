@@ -26,68 +26,43 @@ author = pandas.read_excel("test_author.xlsx")
 #publi = pandas.read_csv("publication_author.csv", sep = ';', encoding = "ISO-8859-1")
 #author = pandas.read_csv("author.csv", sep = ';', encoding = "ISO-8859-1")
 
-g = igraph.Graph()
+global g
 
 def start():
-    set_graph()
+    g = igraph.Graph()
+    set_graph(g)
     display_graph()
     # display_graph_information()
 
 """
 Set the graph
 """
-def set_graph():
-    auth_dict=get_vertices()
-    set_vertices(auth_dict)
-    edgeslist=get_link_of_author()
-    set_edges(edgeslist)
-    simplify_graph()
+def set_graph(g):
+    authors = get_authors()
+    publications = get_publications()
+    set_vertices(g, authors)
+    set_edges(g, publications)
+    simplify_graph(g)
 
-def get_vertices():
-    auth_number = 0
-    auth_dict = {}
-    for auth_id, auth_name in author.itertuples(index=False):
-        auth_dict[auth_number] = {"author_id":auth_id,"name":str(auth_name)}
-        auth_number += 1
-    return auth_dict
+def get_authors():
+    return Author.get_all_instances()
 
-def set_vertices(authdict):
-    for author in authdict.values():
-        g.add_vertices(str(author["author_id"]),{"author_name":author["name"],"id_author":author["author_id"], "name":author["author_id"]})
+def get_publications():
+    return Publication.get_all_instances()
 
-def set_edges(edgeslist):
-    return g.add_edges(edgeslist)
+def set_vertices(g, authors):
+    for author in authors:
+        g.add_vertices(str(author.get_author_id()),{"author_name":author.get_author_name(),"id_author":author.get_author_id(), "name":author.get_author_id()})
 
-def get_link_of_author():
-    cur_publi = publi['id_publication'][1]
-    link_auth = []
-    index = 0
-    linked_auth_tuple = []
-    for auth in publi.id_author:
-        if(cur_publi==publi.id_publication[index]):
-            link_auth.append(auth)
-        else:
-            for tup in set_tuple(link_auth):
-                linked_auth_tuple.append(tup)
-            link_auth=[auth]
-            cur_publi=publi.id_publication[index]
-        index += 1
-    for tup in set_tuple(link_auth):
-        linked_auth_tuple.append(tup)
-    return linked_auth_tuple
 
-def set_tuple(authlist):
-    tuple_list = []
-    for i in range(0,len(authlist)):
-        for j in range(i+1,len(authlist)):
-            tuple_list.append((authlist[i],authlist[j]))
-    return tuple_list
+def set_edges(g, publications):
+    for publication in publications:
+        for auth1 in range (0, len(publication.get_authors())):
+            for auth2 in range(auth1 +1 , len(publication.get_authors())):
+                g.add_edges([(publication.get_authors()[auth1],publication.get_authors()[auth2])],{"publication_id":publication.get_id_publication(), "publication_title":publication.get_article_title(), "publication_date":publication.get_publication_date(), "author_number": publication.get_nb_author(), "categorie": publication.get_categorie(), "weight":1})
 
-def simplify_graph():
-    g.es["weight"]=1
+def simplify_graph(g):
     g.simplify(combine_edges="sum")
-    return
-
 
 """
 display graph
@@ -138,7 +113,7 @@ def linked_cluster(clusters):
                     cluster.append((i,j))
     print(cluster)
 
-start()
+# start()
 
 
 
