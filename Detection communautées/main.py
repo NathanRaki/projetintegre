@@ -15,6 +15,7 @@ Import classes
 from Author import Author
 from Publication import Publication
 import detection
+import Data_filter
 
 os.chdir("c:/Users/louis/OneDrive/Documents/Master 1/Projet Intégré")
 
@@ -34,7 +35,8 @@ def main():
     # print('publi_test: ', publi_test)
     # print('author_test: ', author_test)
     import_file()
-    detection.start()
+    Data_filter.data_filter(publication_year="2018")
+    # detection.start()
     
 def import_file():
     publi_author = pandas.read_excel("test.xlsx")
