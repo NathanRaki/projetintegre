@@ -31,8 +31,8 @@ global g
 def start():
     g = igraph.Graph()
     set_graph(g)
-    # display_graph()
-    # display_graph_information()
+    detection_by_infomap(g)
+    display_graph_information(g)
 
 """
 Set the graph
@@ -62,18 +62,28 @@ def set_edges(g, publications):
                 g.add_edges([(publication.get_authors()[auth1],publication.get_authors()[auth2])],{"publication_id":publication.get_id_publication(), "publication_title":publication.get_article_title(), "publication_date":publication.get_publication_date(), "author_number": publication.get_nb_author(), "categorie": publication.get_categorie(), "weight":1})
 
 def simplify_graph(g):
-    g.simplify(combine_edges=dict(weight="sum"))
+    g.simplify(combine_edges=dict(weight="sum", publication_id ="concat"))
+    for e in g.es:
+        e["publication_id"] = e["publication_id"].split("conf/")[1:]
+        
+"""
+Communitity detection
+"""
+
+def detection_by_infomap(g):
+    i = g.community_infomap(edge_weights="weight", trials=20)
+    display_graph(g, i)
 
 """
 display graph
 """
-def display_graph():
+def display_graph(g, i):
     print('display')
     # layout = g.layout("kk")
     # g.simplify()
-    igraph.plot(g, "social_network_test.pdf")
+    # igraph.plot(g, "social_network_test.pdf")
     #igraph.plot(g, "social_network2.pdf", layout = layout)
-    i = g.community_infomap(edge_weights="weight", trials=20)
+    # i = g.community_infomap(edge_weights="weight", trials=20)
     #i = g.community_edge_betweenness(None, False)
     # linked_cluster(i)
     # print(i)
@@ -84,9 +94,9 @@ def display_graph():
         for member in cluster:
             g.vs[member]['color'] = colors[clid%4]
             g.vs[member]['frame_width'] = -100
-    g.vs['frame_width'] = 0
+    # g.vs['frame_width'] = 0
     igraph.plot(i, "social_network_infomap.svg", rescale=True, **params)
-    igraph.plot(g, "social_network.svg", rescale=True, **params)
+    # igraph.plot(g, "social_network.svg", rescale=True, **params)
     # figure = igraph.plot(i, "social_network_infomap.pdf", **params)
     # figure.show()
     
@@ -96,8 +106,11 @@ def visualize_params():
     # visual_style["vertex_label"] = g.vs["author_name"]
     return visual_style
 
-def display_graph_information():
-    print('clique number: ', g.omega())()
+def display_graph_information(g):
+    for e in g.es:
+        if(e["weight"]>2):
+            print(e)
+    # print('clique number: ', g.omega())()
     # print('modularity: ', g.modularity())
     # print('independance number: ', g.alpha())
     # print('coreness: ', g.shell_index())

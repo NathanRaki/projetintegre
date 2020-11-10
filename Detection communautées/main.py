@@ -49,15 +49,12 @@ def import_file():
 def initialize_publication(publications):
     for index, value in publications.iterrows():
         Publication(value["id_publication"], value["date_pub"], value["nbr_authors"],value["article_title"], value["categorie"])
-    publi_inst = Publication.get('conf/sitis/SaidiTBB18')
-    print(publi_inst[0])
     
 def initialize_author(authors):
     for index, value in authors.iterrows():
         Author(value["id_author"], value["name_author"], value["nbr_publication"])
         
 def initialize_link_author_publi(publi_author): 
-    print(publi_author)
     publications = {}
     authors = {}
     for index, value in publi_author.iterrows():
