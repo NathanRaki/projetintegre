@@ -24,7 +24,10 @@ def get_topics(filename):
     topics = topics.reset_index()
     topics = topics.drop(columns="index")
     topics.columns = ['topic', 'tokens']
-    return topics
+    _topics = {}
+    for _, row in topics.iterrows():
+        _topics[row['topic']] = row['tokens']
+    return _topics
 
 def generate_graphs(topic_number, topics_filename, publication_filename):
     pd.set_option('mode.chained_assignment', None)
