@@ -15,23 +15,45 @@ df = pd.read_csv('data/publication.csv', sep = ',', encoding = 'cp1252')
 # Utilisé pour gagner du temps afin de ne pas avoir à re-exécuter tout
 # à chaque ré-ouverture
 def save_dict(dico, filename) :
-    with open("pickle/"+filename+".pickle", 'wb') as handle:
+    with open(filename+".pickle", 'wb') as handle:
         pickle.dump(dico, handle, protocol=pickle.HIGHEST_PROTOCOL)
         
 def load_dict(filename) :
-    with open("pickle/"+filename+".pickle", 'rb') as handle:
+    with open(filename+".pickle", 'rb') as handle:
+        return(pickle.load(handle))
+    
+#%%
+def save(var, filename) :
+    with open("prediction/"+filename+".pickle", 'wb') as handle:
+        pickle.dump(var, handle, protocol=pickle.HIGHEST_PROTOCOL)
+        
+def load(filename) :
+    with open("prediction/"+filename+".pickle", 'rb') as handle:
         return(pickle.load(handle))
     
 #%% Chargement des données de Davy et Romain
-romain = load_dict('topic_romain')
-davy = load_dict('topic_davy')
+romain = load_dict('pickle/topic_romain')
+davy = load_dict('pickle/topic_davy')
+
+#%%
+davy_cleaned = davy.reset_index()
+romain_cleaned = romain.reset_index()
+davy_cleaned = davy_cleaned.rename(columns={'Titles_ID':'id_publication'})
+romain_cleaned = romain_cleaned.rename(columns={'index':'id_publication'})
+topics_davy = davy_cleaned[['Keywords', 'Dominant_Topic']]
+topics_romain = romain_cleaned[['description', 'label']]
+
+topics_davy = topics_davy.drop_duplicates() 
+topics_romain = topics_romain.drop_duplicates()
+
+topics_davy = topics_davy.sort_values(by=['Dominant_Topic'])
+topics_davy['Dominant_Topic'] = topics_davy['Dominant_Topic'].astype(int)
+topics_romain = topics_romain.sort_values(by=['label'])
+
+print(topics_davy)
+print(topics_romain)
 
 #%% Transformation des données
-davy = davy.reset_index() # On enlève l'index s'il y en a
-davy = davy.rename(columns={'Titles_ID':'id_publication'}) # On change le nom de la colonne en id_publication
-romain = romain.reset_index() # On enlève l'index s'il y en a
-romain = romain.rename(columns = {'index':'id_publication'}) # On change le nom de la colonne en id_publication
-
 dataD = pd.merge(df, davy, on='id_publication') # Fusion de publication et des données de Davy sur la colonne id_publication
 dataD = dataD[['date_pub', 'Dominant_Topic']] # On garde uniquement ces deux colonnes
 dataD.columns = ['date', 'topic'] # On les renomme
@@ -116,7 +138,11 @@ for topic in topic_list.values:
     data = data.reset_index() # On enlève l'index créé par groupby
     data.columns = ['ds', 'y'] # Changement du nom des colonnes pour l'adapter au Modèle
     #data.plot(figsize=(19,4), style='b--') # Représentation des données sous forme de graphique
+    save_dict(data, 'topic%s' % str(topic))
     print(data)
+
+    #data['y'] = data['y'] - data['y'].shift(1)
+    #data = data[1:]
     
     model = Prophet() # Initialisation du modèle
     model.fit(data) # On 'fit' le modèle aux données
@@ -136,6 +162,12 @@ for topic in topic_list.values:
     forecast = model.predict(future) # On appelle la fonction predict du modèle qui va calculer ça pour la période 'future'
     
     print(forecast[['ds', 'yhat', 'yhat_lower', 'yhat_upper']].head()) # Affichage des données de la prédiction
-    plot(model, forecast, 'Topic n°%s Monthly Frequency' % topic[0], xlabel='Months', ylabel='Topic Count') # Appel de la fonction plot pour afficher la prédiction + la vérité en un graphique
-    plt.savefig('./prediction/%s/%s.png' % (name, str(topic[0]))) # Sauvegarde du graphique en .png
+    plot(model, forecast, 'Topic n°%s Monthly Frequency' % topic[0], xlabel='Months', ylabel='Topic Count') # Appel de la fonction plot pour afficher la prédiction + la vérité en un graphique 
+    plt.savefig('./prediction/%s/%s/data.png' % (name, str(topic[0]))) # Sauvegarde du graphique en .png   
+    model.plot_components(forecast)
+    plt.savefig('./prediction/%s/%s/trend.png' % (name, str(topic[0]))) # Sauvegarde du graphique en .png
     plt.show()
+    save(model, '%s_model_%s' % (name, str(topic[0])))
+    save(forecast, '%s_forecast_%s' % (name, str(topic[0])))
+    
+#%%
