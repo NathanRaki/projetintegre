@@ -1,4 +1,7 @@
-  
+ .body {
+ 	margin: 5px;
+ } 
+
 .nodes circle {
     cursor: pointer;
  	fill: #a00cb8;
@@ -14,4 +17,8 @@
 
 .svg {
 	font: 12px sans-serif;
+}
+
+.div filter_params {
+	display:inline-block;
 }

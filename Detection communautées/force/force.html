@@ -2,39 +2,40 @@
 <html>
   <head>
     <title>Force-Directed Layout</title>
-    <script type="text/javascript" src="https://d3js.org/d3.v4.min.js"></script><script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script type="text/javascript" src="https://d3js.org/d3.v4.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
-    <link type="text/css" rel="stylesheet" href="force/force.css"/>
+    <link type="text/css" rel="stylesheet" href="force/app.css"/>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
   </head>
   <body>
   	<h1><center>Community detection</center></h1>
-  	<div class="row">
-  		<div>
-  			<p>
-  				<div>
-	  				<label for="year">Select year:</label> 
-		  			<select name="year" id="year">
-		  				<option value="" selected></option>
-		  			</select>
-	  			</div>
-	  			<div>
-	  				<label for="start_date">Minimum date:</label>
-	  				<input type="date" name="start_date" id="start_date">
-	  			</div>
-	  			<div>
-	  				<label for="end_date">Maximum date:</label>
-	  				<input type="date" name="end_date" id="end_date">
-	  			</div>
-	  			<div>
-	  				<button onclick="send_data()">Get graph</button>
-	  			</div>
-  			</p>
-  		</div>
+  	<div class="row" style="display:inline">
+		<div class="col-xs-3">
+			<label for="conf">conference:</label> 
+			<select name="conf" id="conf">
+				<option value="" selected></option>
+			</select>
+		</div>
+		<div class="col-xs-3">
+			<label for="year">Select year:</label>
+			<select name="year" id="year">
+				<option value="" selected></option>
+			</select>
+		</div>
+		<div class="col-xs-3">
+			<label for="start_date">Minimum date:</label>
+			<input type="date" name="start_date" id="start_date">
+			<label for="end_date">Maximum date:</label>
+			<input type="date" name="end_date" id="end_date">
+		</div>
+		<div class="col-xs-3">
+			<button onclick="send_data()">Get graph</button>
+		</div>
   	</div>
   	<div class="row">
 	  	<div class="col-md-10 col-lg-10">
-	  		<svg width="2000" height="1000"></svg>
+	  		<svg width="1500" height="1000"></svg>
 	  	</div>
 	  	<div class="col-md-2 col-lg-2">
 	  		<h2>Menu</h2>
@@ -43,6 +44,7 @@
 	  			<p id='author_name'></p>
 	  			<label id="publication_label"></label>
 	  			<ul id='publication_list'></ul>
+	  			<button onclick="get_sub_graph()">Get sub graph analysis</button>
 	  		</div>
 	  	</div>
 	 </div>

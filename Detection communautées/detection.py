@@ -13,10 +13,15 @@ Import classes
 '''
 
 import Display
+from Cluster import Cluster
+from Graph import Graph
 
 os.chdir("c:/Users/louis/OneDrive/Documents/Master 1/Projet Intégré")
 
 import igraph
+
+global i
+global g
 
 def start(authors_list, publications_list):
     print('authors len: ', len(authors_list))
@@ -24,8 +29,31 @@ def start(authors_list, publications_list):
     g = igraph.Graph()
     g = set_graph(g, authors_list, publications_list)
     i = detection_by_infomap(g)
-    Display.init_graph(g, i)
+    Cluster.get().set_cluster(i)
+    Graph.get().set_graph(g)
+    networkX_graph=Display.init_graph(g, i)
+    return g
     # display_graph_information(g)
+    
+def sub_graph(author):
+    sub_graph_list = []
+    sub_graph_cluster = []
+    graph = Graph.get().get_graph()
+    for neigh in graph.neighbors(author):
+        for clust in Cluster.get().get_cluster():
+            if graph.vs[neigh].index in clust and clust not in sub_graph_cluster:
+                print(clust)
+                sub_graph_list = sub_graph_list + clust
+                sub_graph_cluster.append(clust)
+    sub_graph = graph.subgraph(sub_graph_list)
+    sub_graph_cluster = detection_fast_greedy(sub_graph)
+    # sub_graph_cluster = detection_by_infomap(sub_graph)
+    Cluster.get().set_cluster(sub_graph_cluster)
+    Graph.get().set_graph(sub_graph)
+    Display.init_graph(sub_graph, sub_graph_cluster)
+    return
+    # print(Cluster.get().get_cluster())
+    # and clust not in sub_graph_list
 
 """
 Set the graph
@@ -60,6 +88,11 @@ Communitity detection
 
 def detection_by_infomap(g):
     i = g.community_infomap(edge_weights="weight", trials=20)
+    return i
+
+def detection_fast_greedy(g):
+    i = g.community_infomap(edge_weights="weight", trials=100)
+    print('i: ',i)
     return i
 
 

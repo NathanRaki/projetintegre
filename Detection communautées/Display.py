@@ -27,7 +27,6 @@ def init_graph(g, i):
                 is_in = check_list_publication(Publication.Publication.get('conf/'+publi)[0].get_article_title(), publication_list)
                 if is_in == False:
                     publication_list.append([Publication.Publication.get('conf/'+publi)[0].get_article_title(),str(Publication.Publication.get('conf/'+publi)[0].get_publication_date())])
-        print(publication_list)
         G.add_nodes_from([(v.index,{"id_author":v['id_author'], "author_name":v["author_name"], "publications":publication_list})])
     r = lambda: random.randint(0,255)
     attr = {}
@@ -38,10 +37,9 @@ def init_graph(g, i):
         nx.set_node_attributes(G, attr)
     for e in g.es:
         G.add_edges_from([(e.source, e.target), {"publications":e['publication_id'],"weight":e["weight"]}])
-    
-    d = json_graph.node_link_data(G)  
+    d = json_graph.node_link_data(G)
     json.dump(d, open("c:/Users/louis/OneDrive/Documents/GitHub/projetintegre/Detection communautées/force/force.json", "w"))
-    return
+    return d
 
 
 def check_list_publication(publication_name, publication_list):

@@ -14,7 +14,10 @@ Import classes
 '''
 from Author import Author
 from Publication import Publication
+from Cluster import Cluster
+from Graph import Graph
 import detection
+import pickle
 # from data_filter import *-
 
 os.chdir("c:/Users/louis/OneDrive/Documents/Master 1/Projet Intégré")
@@ -25,17 +28,18 @@ import flask
 
 def main():
     print('start')
-    # arg = {}
-    # arg['publication_year']=None
-    # arg['publication_start_date'] = None
-    # arg['publication_end_date']=None
+    arg = {}
+    arg['publication_year']=None
+    arg['publication_conf'] = None
+    arg['publication_start_date'] = None
+    arg['publication_end_date']=None
     import_file()
-    # get_graph(arg)
+    get_graph(arg)
 
 def get_graph(args):
     data = data_filter(args)
-    detection.start(data[1], data[0])
-    return True
+    G = detection.start(data[1], data[0])
+    return G
     
 def import_file():
     publi_author = pandas.read_excel("test.xlsx")
@@ -47,6 +51,8 @@ def import_file():
     initialize_publication(publication)
     initialize_author(author)
     initialize_link_author_publi(publi_author)
+    Cluster()
+    Graph()
     
 def initialize_publication(publications):
     for index, value in publications.iterrows():
@@ -69,10 +75,22 @@ def initialize_link_author_publi(publi_author):
         else:
             authors[value['id_author']] = [value['id_publication']]
     for index, value in publications.items():
-        Publication.get(index)[0].set_authors(value)
-        
+        if len(Publication.get(index)) > 0:
+            Publication.get(index)[0].set_authors(value)
     for index, value in authors.items():
         Author.get(index)[0].set_publication(value)
+    # save(Publication.get_all_instances(), ' /Data/Publications')
+    # save(Author.get_all_instances(), '/Data/Authors')
+        
+def save(var, filename) :
+    # with open("prediction/"+filename+".pickle", 'wb') as handle:
+    with open(filename+".pickle", 'wb') as handle:
+        pickle.dump(var, handle, protocol=pickle.HIGHEST_PROTOCOL)
+        
+def load(filename) :
+    # with open("prediction/"+filename+".pickle", 'rb') as handle:
+    with open(filename+".pickle", 'rb') as handle:
+        return(pickle.load(handle))
 
 def data_filter(args):
     authors = Author.get_all_instances()
@@ -85,6 +103,10 @@ def data_filter(args):
         return (publications, authors)
     authors_list = []
     publication_list = []
+    if args['publication_conf'] != None:
+        for publication in publications:
+            if str(publication.get_id_publication().split('/')[1]) == str(args['publication_conf']):
+                publication_list.append(publication)
     if args['publication_year'] != None:
         for publication in publications:
             if str(publication.get_publication_date().year) == str(args['publication_year']):
@@ -97,11 +119,8 @@ def data_filter(args):
         for publication in publications:
             if publication.get_publication_date() < datetime.datetime.strptime(args['publication_end_date'], "%Y-%m-%d"):
                 publication_list.append(publication)
-    # if publication_categorie != None:
-    #     for publication in publications:
-    #         if publication.get_categorie() != publication_categorie:
-    #             publications.remove(publication)
     authors_list = filter_author(publication_list, authors)
+    print(len(authors_list))
     return (publication_list, authors_list)
     
 def filter_author(publications, authors):
@@ -119,14 +138,24 @@ def filter_author(publications, authors):
 
 app = flask.Flask(__name__, static_folder="force")
 
+@app.route("/", methods=['GET'])
+def get_home_page():
+    return app.send_static_file("index.html")
+
 @app.route("/get_graph", methods=['GET'])
 def static_proxy():
     arg = {}
     arg['publication_year']=flask.request.args.get('publication_year')
-    print('request: ',flask.request.args.get('publication_start_date'))
     arg['publication_start_date'] = flask.request.args.get('publication_start_date')
     arg['publication_end_date']=flask.request.args.get('publication_end_date')
+    arg['publication_conf']=flask.request.args.get('publication_conf')
     get_graph(arg)
+    return app.send_static_file("force.html")
+
+@app.route("/get_sub_graph_analysis")
+def get_sub_graph_analysis():
+    author = flask.request.args.get('author_id')
+    detection.sub_graph(author)
     return app.send_static_file("force.html")
 
 @app.route("/get_year_list")
@@ -136,6 +165,23 @@ def get_year_list():
         if publication.get_publication_date().year not in year_list:
             year_list.append(publication.get_publication_date().year)
     return str(year_list)
+
+@app.route("/get_conf_list")
+def get_conf_list():
+    conf_list = []
+    for publication in Publication.get_all_instances():
+        if publication.get_id_publication().split('/')[1] not in conf_list:
+            conf_list.append(publication.get_id_publication().split('/')[1])
+    return str(conf_list)
+
+@app.route("/get_prediction")
+def get_prediction_page():
+    return app.send_static_file("prediction.html")
+
+@app.route("/get_prediction_graph")
+def prediction_graph():
+    return app.send_static_file("fig0.html")
+
 
 if __name__ == "__main__":
     main()
