@@ -82,4 +82,3 @@ generate_graphs(
     topics_filename = 'pickle/topic_davy',
     publication_filename = 'data/publication.csv'
 )
-    
